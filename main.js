@@ -98,7 +98,14 @@ bot.on('message', (message, pos) => {
     const guild_regex = new RegExp("(Guild >)")
 
     if (regex.exec(chatmsg) != null | guild_regex.exec(chatmsg) == null){
-        console.log(chatmsg);
+        chatmsg = chatmsg.replace("Guild >", "");
+        if (chatmsg.includes("left.") == true){
+            channel.send(chatmsg);
+        } else if (chatmsg.includes("left.") == true) {
+            channel.send(chatmsg);
+        } else {
+            console.log(chatmsg);
+        }
     } else {
         console.log("Guild message!");
 
@@ -111,9 +118,11 @@ bot.on('message', (message, pos) => {
         } else {
             // command is the variable containing the executed command (ex. .test)
             var command = prefix_regex.exec(cleanmsg.replace(hypixel_chat_regex, ""))
-
+            // cmd_args are the arguments after the command, the command itself is the array's first element at index 0.
+            var cmd_args = command.input.split(' ');
+            
             // Check if command exists in the directory as a .js file
-            if (cmds.includes(`${command.input.replace(".", "")}.js`)){
+            if (cmds.includes(`${cmd_args[0].replace(".", "")}.js`)){
                 var chat_command = require(`./modules-hypixel-chat/${command.input.replace(".", "")}.js`) //variable for requiring the module's function
                 chat_command(bot);  
             } else { 

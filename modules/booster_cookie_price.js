@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder } = require('discord.js')
+const config = require('../config.json')
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('cookieprice')
@@ -16,7 +17,7 @@ module.exports = {
 
             // Embed
             const Embed = new EmbedBuilder()
-            .setColor('#5e03fc')
+            .setColor(`#${config.embedcolor}`)
             .setTitle('Booster Cookie prices')
             .setAuthor({ name: "Bigeon"})
             .addFields(
