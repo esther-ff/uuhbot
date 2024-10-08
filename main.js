@@ -98,10 +98,10 @@ bot.on('message', (message, pos) => {
     const guild_regex = new RegExp("(Guild >)")
 
     if (regex.exec(chatmsg) != null | guild_regex.exec(chatmsg) == null){
-        chatmsg = chatmsg.replace("Guild >", "");
+        chatmsg = chatmsg.replace("Guild >", "").replace(/_/g, "\\_");
         if (chatmsg.includes("left.") == true){
             channel.send(chatmsg);
-        } else if (chatmsg.includes("left.") == true) {
+        } else if (chatmsg.includes("joined. ") == true) {
             channel.send(chatmsg);
         } else {
             console.log(chatmsg);
