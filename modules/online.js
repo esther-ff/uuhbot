@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder } = require('discord.js')
 const config = require('../config.json')
-const apikey = 'e04b6f2a-ec5e-4c73-9205-596676ec6ac3' //6948e0a6-4ff6-45c2-93e2-601453c0bc39
+const apikey = '6948e0a6-4ff6-45c2-93e2-601453c0bc39' 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('online')

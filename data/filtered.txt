@@ -11,3 +11,4 @@
 /(?:\bOhio)/gmi
 /(?:\bRizz)/gmi
 /(?:\bzip packets)/gmi
+/(?:MiniOst)/
