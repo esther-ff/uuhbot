@@ -160,7 +160,7 @@ client.on("messageCreate", (msg) => {
 		}
                 // generate random number for the hashtag chance
                 let randomNumber = Math.floor(Math.random()*(30+2)+1)
-		let funny; 
+		let funny = ""; 
 
                 if (randomNumber == 2){
                     funny = " #freediddy"
