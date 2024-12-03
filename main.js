@@ -97,8 +97,7 @@ for (folder in commandloc){
 // Executed when the bot is ready (discord.js)
 client.once(Events.ClientReady, cl => {
     console.log(`${cl.user.tag} - Discord Part Ready!`)    
-    channel = client.channels.cache.get(ChannelID)       
-                                      
+    channel = client.channels.cache.get(ChannelID)                                             
 });
 
 // on message in minecraft chat
@@ -108,10 +107,8 @@ bot.on('message', (message) => {
         chatmsg = chatmsg.replace("Guild >", "").replace(/_/g, "\\_");
         if (chatmsg.includes("left.") == true){
             channel.send(chatmsg);
-        } else if (chatmsg.includes("joined. ") == true) {
+        } else if (chatmsg.includes("joined.") == true) {
             channel.send(chatmsg);
-        } else {
-            console.log(chatmsg);
         }
     } else {
         // Guild message without the "Guild >"
@@ -147,7 +144,6 @@ bot.on('message', (message) => {
 bot.on('login', () => {
     console.log('Minecraft side ready!')
     isBotReady = true
-    bot.chat("Hello! Hello!, is this Ironballers????")
 })
 
 // on creation of a discord message
@@ -157,7 +153,21 @@ client.on("messageCreate", (msg) => {
             if (discordRegex.exec(msg.content) != null){
                 console.log("Filtered: ", msg.content);
             } else {
-                bot.chat(`[${msg.author.globalName}]: ${msg.content}`);
+                let botMessage = `[${msg.author.globalName}]: ${msg.content}`
+		if (msg.content.length > 60){
+			msg.reply({ content: "Maximum length is 60 characters", ephemeral: true })
+			return
+		}
+                // generate random number for the hashtag chance
+                let randomNumber = Math.floor(Math.random()*(30+2)+1)
+		let funny; 
+
+                if (randomNumber == 2){
+                    funny = " #freediddy"
+                }
+		
+		bot.chat(botMessage+funny);
+	
                 fs.appendFile(discordLogs, `[${msg.author.globalName}]: ${msg.content}\n`, (error) =>{
                     if (error) {
                         console.log(error);
