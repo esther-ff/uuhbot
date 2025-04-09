@@ -1,34 +1,42 @@
 import { BotConfig } from './config';
 import { Bot, BotOptions, createBot } from 'mineflayer';
 import { FileHandle, open } from 'node:fs/promises';
+import { CommandList } from './commands/commandList';
+import { Commands } from './commands/mc-chat/main';
+import { appendHashtag } from './hashtags';
 
 export class MinecraftSide {
-  public bot: Bot
+  public readonly bot: Bot
+  public readonly commandList: CommandList;
+
   filter: RegExp;
 
   file: FileHandle | null;
-  canLog: boolean;
-  logDir: string | null;
+  readonly canLog: boolean;
+  readonly logDir: string | null;
 
   ready: boolean;
 
-  callback: (arg0: string) => boolean;
+  callback: (arg0: string, arg1: MinecraftSide) => boolean;
   hasCallback: boolean;
   
-
   constructor(options: BotOptions, 
     loginCallBack?: () => any, 
-    msgCallBack?: (arg0: string) => boolean) 
+    msgCallBack?: (arg0: string, arg1: MinecraftSide) => boolean) 
   {
-    this.bot = createBot(options);
-    this.filter = BotConfig.regexize(BotConfig.filter_regexes);
-
-
-    this.hasCallback = msgCallBack != undefined;
+    Object.assign(this, {
+      bot: createBot(options),
+      commandList: new CommandList(),
+      filter: BotConfig.regexize(BotConfig.filter_regexes),
+      hasCallback: msgCallBack != undefined,  
+      callback: msgCallBack,  
+      ready: false,      
+    });
 
     // Once executed login callback
     this.bot.once("login", () => {
       this.ready = true;
+      this.commandList.populate(Commands);
       if (loginCallBack !== undefined) {
         loginCallBack!();
       }
@@ -57,15 +65,28 @@ export class MinecraftSide {
       return;
     }
 
-    let doChat = true; 
+    
+      let doChat = true;
 
-    if (this.hasCallback) {
-      doChat = this.callback!(msg)
-    }
+      if (this.hasCallback) {
+        doChat = this.callback!(msg, this)
+      };
+    
+      console.log(msg);
 
-    if (doChat) {
-        this.bot.chat(msg)
-    };
+      if (doChat) {
+        let newMsg = appendHashtag(msg, () => {
+                // guarantee a 1 in 20 chance to roll a hashtag.
+                const min = 1;
+                const max = 20;
+      
+                return Math.floor(Math.random() * (max - min) + min) == max;
+              });      
+        this.bot.chat(newMsg);  
+        this.log(newMsg);
+
+        return;
+      };
     
     this.log(msg);
   }

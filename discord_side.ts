@@ -1,29 +1,40 @@
 import { Client, ClientEvents, ClientOptions, Events, TextChannel } from 'discord.js';
+import { FileHandle, open } from 'node:fs/promises'
+import { Commands } from './commands/discord-chat/main';
+import { CommandList } from './commands/commandList';
 import { LoggingDirs, BigeonConfig } from './config_types'
 import { BotConfig } from './config'
-import { FileHandle, open } from 'node:fs/promises'
 
 export class DiscordBotSide{
-  public client: Client;
+  public readonly client: Client;
   
-  channel_id: string;
-  log_dir: string | null;
-  can_log: boolean;
+  readonly channel_id: string;
   channel: TextChannel | undefined;
-  filter: RegExp;
-  token: string;
 
-  hasCallback: boolean;
-  callback: ((arg0: string) => boolean) | undefined;
+  readonly log_dir: string | null;
+  readonly can_log: boolean;
+
+  filter: RegExp;
+  readonly token: string;
+
+  readonly hasCallback: boolean;
+  readonly callback: ((arg0: string, arg1: DiscordBotSide) => boolean) | undefined;
   
   open_file: FileHandle | null
-  
-  constructor(opts: ClientOptions, token: string, func?: (arg0: string) => boolean) {
-    this.client = new Client(opts);
 
-    this.hasCallback = func !== undefined;
-    this.callback = func;
-    
+  public readonly commandList: CommandList;
+  
+  constructor(opts: ClientOptions, token: string, func?: (arg0: string, arg1: DiscordBotSide) => boolean) {
+    Object.assign(this, {
+      client: new Client(opts),
+      hasCallback: func !== undefined,
+      callback: func,
+      channel_id: BotConfig.channel_id,
+      can_log: BotConfig.log_dirs.discord_chat_dir != null,
+      log_dir: BotConfig.log_dirs.discord_chat_dir,
+      filter: BotConfig.regexize(BotConfig.filter_regexes)
+    })
+
     this.client.login(token)
       // check for login
       .then((log) => console.log("client logged in"))
@@ -44,11 +55,6 @@ export class DiscordBotSide{
           }
     ));
 
-    this.channel_id = BotConfig.channel_id;
-    this.can_log = BotConfig.log_dirs.discord_chat_dir != null
-    this.log_dir = BotConfig.log_dirs.discord_chat_dir
-    this.filter = BotConfig.regexize(BotConfig.filter_regexes)
-
     if (this.can_log) {
       open(this.log_dir!, "w+")
         .then(
@@ -67,8 +73,11 @@ export class DiscordBotSide{
   }
 
   chat(msg: string) {
+    msg = msg.toString();
+    
     // if it's our own message don't even process it.
     if (msg.includes(BotConfig.bot_user)) {
+      console.log(msg);
       return;
     }
 
@@ -81,30 +90,22 @@ export class DiscordBotSide{
 
     msg = msg.replace("Guild >", "").replace("_", "\_");
 
-    let doChat = true;
-
+    
     if (this.hasCallback) {
-      doChat = this.callback!(msg)
-    }
-
-    console.log(msg);
-
-    if (doChat) {
-      this.channel?.send({ content: msg });    
-    };
+          if (this.callback!(msg, this)) {
+            this.channel!.send(msg);
+          }
+        } else {
+          this.channel!.send(msg);
+        }
+    
 
     this.log(msg)
- 
-  }
+   }
 
   log(msg: string) {
     if (this.can_log) {
        this.open_file?.appendFile(msg + "\n")
     };
   }
-
-  roll_hashtag(): string {
-    return "unimplemented"
-  }
-  
 } 
