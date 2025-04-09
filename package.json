@@ -1,7 +1,15 @@
 {
-  "devDependencies": {
-    "discord.js": "^14.16.3",
-    "mineflayer": "^4.23.0",
-    "prismarine": "^0.0.0"
+  "name": "bigeon",
+  "version": "1.0.0",
+  "description": "Discord bot for Ironballers",
+  "main": "main.ts",
+  "scripts": {
+    "build": "npm install discord.js mineflayer"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.18.0",
+    "mineflayer": "^4.26.0"
   }
 }
