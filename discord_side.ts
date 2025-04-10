@@ -1,11 +1,12 @@
 import { Client, ClientEvents, ClientOptions, Events, TextChannel } from 'discord.js';
 import { FileHandle, open } from 'node:fs/promises'
 import { Commands } from './commands/discord-chat/main';
-import { CommandList } from './commands/commandList';
+import { CmdFunction, CommandList } from './commands/commandList';
 import { LoggingDirs, BigeonConfig } from './config_types'
 import { BotConfig } from './config'
+import { Commandable } from './commands/Commandable';
 
-export class DiscordBotSide{
+export class DiscordBotSide implements Commandable {
   public readonly client: Client;
   
   readonly channel_id: string;
@@ -32,7 +33,8 @@ export class DiscordBotSide{
       channel_id: BotConfig.channel_id,
       can_log: BotConfig.log_dirs.discord_chat_dir != null,
       log_dir: BotConfig.log_dirs.discord_chat_dir,
-      filter: BotConfig.regexize(BotConfig.filter_regexes)
+      filter: BotConfig.regexize(BotConfig.filter_regexes),
+      commandList: new CommandList()
     })
 
     this.client.login(token)
@@ -66,6 +68,16 @@ export class DiscordBotSide{
       })
     }
 
+    this.commandList.populate(Commands)
+
+  }
+
+  getCmd(nom: string): CmdFunction {
+    return this.commandList.get(nom)
+  };
+
+  getSelf(): DiscordBotSide {
+    return this
   }
 
   channelId(): string {

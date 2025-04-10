@@ -1,28 +1,27 @@
+import { Message } from 'discord.js';
 import { MinecraftSide } from '../chatter';
 import { DiscordBotSide } from '../discord_side'
-
-type Functor = MinecraftSide | DiscordBotSide;
+import { Commandable } from './Commandable';
 
 export function handleIfCommand(
-  msg: string, 
+  msg: Message, 
   prefix: string, 
-  victim: Functor
+  victim: Commandable
 ): boolean {
-  let isPrefixed = msg.startsWith(prefix);
+  let msgString = msg.toString();
+  let isPrefixed = msgString.startsWith(prefix);
 
   if (isPrefixed) {
-    const func = async (victim: Functor, msg: string) => {
+    const func = async (victim: Commandable, msg: Message) => {
       // algo to rip apart arguments and stuff etc...
-      let split = msg.split(" ");
+      let split = msgString.split(" ");
       let commandName = split[0].substring(1);
 
       try {
-        let command = victim.commandList.get(commandName);
-
-        command(msg, victim);
-
+        let command = victim.getCmd(commandName);
+        command!(msg, victim);
       } catch (err) {
-        victim.chat(err)
+        console.log(err)
       }
     };
     

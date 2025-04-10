@@ -21,7 +21,7 @@ export function initEvent(mcBot: MinecraftSide, discordBot: DiscordBotSide) {
              }     
       } else {
         console.log("hier!");
-         handleIfCommand(msg.toString(), "!", discordBot)
+         handleIfCommand(msg, "!", discordBot)
       } 
   })
 }

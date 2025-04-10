@@ -1,6 +1,6 @@
-import { Functor } from './handleCmd';
-
-export type CmdFunction = (arg0: string, arg1: Functor) => any;
+import { Message } from 'discord.js';
+import { Commandable } from './Commandable'
+export type CmdFunction = (arg0: Message, arg1: Commandable) => any;
 
 export class CommandList {
   length: number;

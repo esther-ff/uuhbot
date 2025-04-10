@@ -1,11 +1,12 @@
 import { BotConfig } from './config';
 import { Bot, BotOptions, createBot } from 'mineflayer';
 import { FileHandle, open } from 'node:fs/promises';
-import { CommandList } from './commands/commandList';
+import { CmdFunction, CommandList } from './commands/commandList';
 import { Commands } from './commands/mc-chat/main';
+import { Commandable } from './commands/Commandable';
 import { appendHashtag } from './hashtags';
 
-export class MinecraftSide {
+export class MinecraftSide implements Commandable {
   public readonly bot: Bot
   public readonly commandList: CommandList;
 
@@ -53,6 +54,14 @@ export class MinecraftSide {
         (err) => 
           { throw new Error("Failed to open \"${this.logDir})}\"") });
     };
+  }
+
+  getCmd(nom: string): CmdFunction {
+    return this.commandList.get(nom)
+  }
+
+  getSelf(): MinecraftSide {
+    return this
   }
 
   chat(msg: string) {
