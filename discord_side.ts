@@ -89,7 +89,6 @@ export class DiscordBotSide implements Commandable {
     
     // if it's our own message don't even process it.
     if (msg.includes(BotConfig.bot_user)) {
-      console.log(msg);
       return;
     }
 

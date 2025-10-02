@@ -12,7 +12,7 @@ export function handleIfCommand(
   let isPrefixed = msgString.startsWith(prefix);
 
   if (isPrefixed) {
-    const func = async (victim: Commandable, msg: Message) => {
+    const func = (victim: Commandable, msg: Message) => {
       // algo to rip apart arguments and stuff etc...
       let split = msgString.split(" ");
       let commandName = split[0].substring(1);

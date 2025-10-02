@@ -25,6 +25,8 @@ export class MinecraftSide implements Commandable {
     loginCallBack?: () => any, 
     msgCallBack?: (arg0: string, arg1: MinecraftSide) => boolean) 
   {
+
+
     Object.assign(this, {
       bot: createBot(options),
       commandList: new CommandList(),
@@ -34,6 +36,9 @@ export class MinecraftSide implements Commandable {
       ready: false,      
     });
 
+   
+
+
     // Once executed login callback
     this.bot.once("login", () => {
       this.ready = true;
@@ -41,6 +46,14 @@ export class MinecraftSide implements Commandable {
       if (loginCallBack !== undefined) {
         loginCallBack!();
       }
+    })
+
+    this.bot.on("death", () => {
+      console.log("bot died?")
+    })
+
+    this.bot.on("message", (msg) => {
+      console.log(`${msg.toString()}`)
     })
 
     // Open logging file

@@ -1,6 +1,7 @@
 import { MinecraftSide } from '../chatter';
 import { DiscordBotSide } from '../discord_side'
 import { handleIfCommand } from '../commands/handleCmd';
+
 export function initEvent(mcBot: MinecraftSide, discordBot: DiscordBotSide) {
   discordBot.client.on("messageCreate", (msg) => {
     // `discordBot.client.user.id` cannot be null.
@@ -11,14 +12,15 @@ export function initEvent(mcBot: MinecraftSide, discordBot: DiscordBotSide) {
      if (msg.channelId === discordBot.channelId()) {
                if (msg.author.id !== discordBot.client.user!.id)
              {
-              let author = msg.author.displayName;
+                  console.log("meow");
+                  let author = msg.author.globalName|| msg.author.displayName;
 
-              // this could be moved inside the `chat` function
-              // to avoid creating this string even if it's going to be 
-              // filtered out.
-              let actualMsg = `${author}: ${msg.toString()}`;
-              mcBot.chat(actualMsg);    
-             }     
+                  // this could be moved inside the `chat` function
+                  // to avoid creating this string even if it's going to be 
+                  // filtered out.
+                  let actualMsg = `${author}: ${msg.toString()}`;
+                  mcBot.chat(actualMsg);    
+              }     
       } else {
         console.log("hier!");
          handleIfCommand(msg, "!", discordBot)
