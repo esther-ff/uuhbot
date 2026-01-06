@@ -7,7 +7,7 @@ stdenv.mkDerivation {
   src = fetchFromGitHub {
     owner = "esther-ff";
     repo = "uuhbot";
-    rev = "master";
+    rev = "main";
     hash = "sha256-u9nSCa5gzsuYmRhJJrpkb+nK1NHZFjC3uTy32cg8jSE=";
   };
 
@@ -15,7 +15,9 @@ stdenv.mkDerivation {
 
   installPhase = ''
     runHook preInstall
-    bun build $src/main.ts --target=bun --minify --outfile=$out/.bigeon.ts 
+    cd $src
+    ls config.ts
+    bun build ./main.ts --target=bun --minify --outfile=$out/.bigeon.ts 
     echo "${bun} run $out/.bigeon.ts --smol" > $out/bin/bigeon
     chmod 744 $out/bin/bigeon
     runHook postInstall
