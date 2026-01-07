@@ -7,15 +7,12 @@ buildNpmPackage {
   makeCacheWritable = true;
   dontNpmBuild = true;
 
-  # src = fetchFromGitHub {
-  #   owner = "esther-ff";
-  #   repo = "uuhbot";
-  #   rev = "5db77c2daa7b9c9e24f42093ad217bcd2b7f6014";
-  #   hash = "sha256-MnrXI1OfSHhMz8DlvdL/9doX170HBPK1V28DB1OZb5I=";
-  # };
-  #
-
-  src = ./.;
+  src = fetchFromGitHub {
+    owner = "esther-ff";
+    repo = "uuhbot";
+    rev = "b53702ab2eba673aa8b3b4d9dc60cdd7c2347546";
+    hash = "sha256-Fcac4JcwA/O8SoACqqeCg5g8r8gURQmbFKWP3b0w/cI=";
+  };
 
   buildInputs = [ bun ];
   buildPhase = ''
