@@ -6,7 +6,6 @@ import { sendDiscordMsg } from "./discord";
 
 export async function startMinecraft() {
 	console.log("started the minecraft side!");
-	console.log(bot);
 }
 
 export async function sendMinecraftMsg(message: string, author: string) {
