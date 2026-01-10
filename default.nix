@@ -1,4 +1,4 @@
-{ buildNpmPackage, fetchNpmDeps, fetchFromGitHub, bun }:
+{ buildNpmPackage, fetchFromGitHub, bun }:
 
 buildNpmPackage {
   name = "bigeon";
@@ -7,13 +7,14 @@ buildNpmPackage {
   makeCacheWritable = true;
   dontNpmBuild = true;
 
-  src = fetchFromGitHub {
-    owner = "esther-ff";
-    repo = "uuhbot";
-    rev = "b53702ab2eba673aa8b3b4d9dc60cdd7c2347546";
-    hash = "sha256-Fcac4JcwA/O8SoACqqeCg5g8r8gURQmbFKWP3b0w/cI=";
-  };
+  # src = fetchFromGitHub {
+  #   owner = "esther-ff";
+  #   repo = "uuhbot";
+  #   rev = "b53702ab2eba673aa8b3b4d9dc60cdd7c2347546";
+  #   hash = "sha256-Fcac4JcwA/O8SoACqqeCg5g8r8gURQmbFKWP3b0w/cI=";
+  # };
 
+  src = ./.;
   buildInputs = [ bun ];
   buildPhase = ''
     runHook preBuild

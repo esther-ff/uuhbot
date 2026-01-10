@@ -5,9 +5,8 @@ import { log, LogUrgency, Side } from "./log";
 import { sendDiscordMsg } from "./discord";
 
 export async function startMinecraft() {
-	bot.on("messagestr", handleMessage);
-	bot.on("error", () => process.exit());
-	bot.on("end", () => process.exit());
+	console.log("started the minecraft side!");
+	console.log(bot);
 }
 
 export async function sendMinecraftMsg(message: string, author: string) {
@@ -57,3 +56,10 @@ const bot = createBot({
 	hideErrors: false,
 	logErrors: true,
 });
+
+bot.on("messagestr", handleMessage);
+// bot.on("error", () => {
+// 	console.log("error! exiting process")
+// 	process.exit()
+// });
+// bot.on("end", () => process.exit());

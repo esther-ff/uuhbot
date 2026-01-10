@@ -5,20 +5,9 @@ import { sendMinecraftMsg } from "./minecraft";
 
 export async function startDiscord(token: string) {
 	await discord.login(token);
-
-	discord.on(Events.MessageCreate, async (message) => {
-		if (message.author.id == discord.user!.id) return;
-
-		const channel = await getChannel();
-		const msg = message.toString();
-		if (isDiscordCommand(msg)) return processDiscordCmd(msg.slice(1));
-
-		if (message.channelId != channel.id) return;
-
-		let author = message.author.displayName || message.author.globalName;
-		sendMinecraftMsg(message.toString(), author ? author : "<anon>");
-	});
+	console.log("started the discord side!")
 }
+
 
 export async function sendDiscordMsg(message: string) {
 	if (!isNotGarbage(message)) return;
@@ -50,6 +39,19 @@ const getChannel = async () =>
 		}
 
 		return chan as TextChannel;
+	});
+
+	discord.on(Events.MessageCreate, async (message) => {
+		if (message.author.id == discord.user!.id) return;
+
+		const channel = await getChannel();
+		const msg = message.toString();
+		if (isDiscordCommand(msg)) return processDiscordCmd(msg.slice(1));
+
+		if (message.channelId != channel.id) return;
+
+		let author = message.author.displayName || message.author.globalName;
+		sendMinecraftMsg(message.toString(), author ? author : "<anon>");
 	});
 
 function isNotGarbage(str: string): boolean {
