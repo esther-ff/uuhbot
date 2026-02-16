@@ -1,27 +1,46 @@
 {
   description = "Bridge bot for discord";
 
-  inputs = { nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable"; };
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+  };
 
-  outputs = { self, nixpkgs }:
+  outputs =
+    { self, nixpkgs }:
     let
-      everySystem = attr:
-        builtins.foldl' (accum: elem: accum // { ${elem} = (attr elem); }) { };
+      everySystem = attr: builtins.foldl' (accum: elem: accum // { ${elem} = (attr elem); }) { };
 
-      supportedTargets = [ "x86_64-linux" "aarch64-linux" ];
+      supportedTargets = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
 
-    in rec {
-      packages = everySystem (system:
-        let pkgs = import nixpkgs { inherit system; };
-        in { default = pkgs.callPackage ./default.nix { }; }) supportedTargets;
+    in
+    rec {
+      packages = everySystem (
+        system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+        in
+        {
+          default = pkgs.callPackage ./default.nix { };
+        }
+      ) supportedTargets;
 
       nixosModules = {
-        bigeon = { config, pkgs, lib, ... }:
+        bigeon =
+          {
+            config,
+            pkgs,
+            lib,
+            ...
+          }:
           let
             inherit (lib.options) mkEnableOption mkOption;
             inherit (lib) types;
             cfg = config.programs.bigeon;
-          in {
+          in
+          {
             options.programs.bigeon = {
               enable = mkEnableOption "bigeon";
 
@@ -74,37 +93,40 @@
               };
             };
 
-            config = lib.modules.mkIf cfg.enable (let
-              botPkg = packages.${pkgs.system}.default;
-              wrapper = pkgs.writeShellScript "bigeon-wrapped" ''
-                echo $HOME
-                BIGEON_TOKEN=$(cat /run/secrets/bigeon_discord_token) ${botPkg}/bin/bigeon
-              '';
+            config = lib.modules.mkIf cfg.enable (
+              let
+                botPkg = packages.${pkgs.system}.default;
+                wrapper = pkgs.writeShellScript "bigeon-wrapped" ''
+                  echo $HOME
+                  BIGEON_TOKEN=$(cat /run/secrets/bigeon_discord_token) ${botPkg}/bin/bigeon
+                '';
 
-            in {
-              environment.etc."bigeon/config.json".text = builtins.toJSON {
-                embedColor = cfg.embedColor;
-                serverAddress = cfg.server;
-                minecraftUsername = cfg.minecraftUsername;
-                minecraftVersion = cfg.minecraftVersion;
-                discordServerId = cfg.discordServerId;
-                channelName = cfg.channelName;
-              };
-
-              environment.systemPackages = [ botPkg ];
-              systemd.services.bigeon = {
-                enable = cfg.enableService;
-                # name = "bigeon";
-                description = "Bridge bot for discord";
-                after = [ "network.target" ];
-                wantedBy = [ "default.target" ];
-
-                serviceConfig = {
-                  Type = "simple";
-                  ExecStart = "${wrapper}";
+              in
+              {
+                environment.etc."bigeon/config.json".text = builtins.toJSON {
+                  embedColor = cfg.embedColor;
+                  serverAddress = cfg.server;
+                  minecraftUsername = cfg.minecraftUsername;
+                  minecraftVersion = cfg.minecraftVersion;
+                  discordServerId = cfg.discordServerId;
+                  channelName = cfg.channelName;
                 };
-              };
-            });
+
+                environment.systemPackages = [ botPkg ];
+                systemd.services.bigeon = {
+                  enable = cfg.enableService;
+                  # name = "bigeon";
+                  description = "Bridge bot for discord";
+                  after = [ "network-online.target" ];
+                  wantedBy = [ "default.target" ];
+
+                  serviceConfig = {
+                    Type = "simple";
+                    ExecStart = "${wrapper}";
+                  };
+                };
+              }
+            );
           };
       };
     };
