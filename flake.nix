@@ -118,6 +118,7 @@
                   # name = "bigeon";
                   description = "Bridge bot for discord";
                   after = [ "network-online.target" ];
+                  wants = [ "network-online.target" ];
                   wantedBy = [ "default.target" ];
 
                   serviceConfig = {
