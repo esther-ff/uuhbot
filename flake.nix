@@ -98,7 +98,7 @@
                 botPkg = packages.${pkgs.system}.default;
                 wrapper = pkgs.writeShellScript "bigeon-wrapped" ''
                   echo $HOME
-                  BIGEON_TOKEN=$(cat /run/secrets/bigeon_discord_token) ${botPkg}/bin/bigeon
+                  BIGEON_TOKEN=$(cat $CREDENTIALS_DIRECTORY/bigeon-token) ${botPkg}/bin/bigeon
                 '';
 
               in
@@ -125,6 +125,9 @@
                   wantedBy = [ "default.target" ];
 
                   serviceConfig = {
+                    LoadCredential = [
+                      "bigeon-token:${cfg.botToken}"
+                    ];
                     Type = "simple";
                     User = "bigeon";
                     ExecStart = "${wrapper}";
