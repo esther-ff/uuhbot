@@ -103,6 +103,10 @@
 
               in
               {
+                users.users.bigeon = {
+                  shell = pkgs.bash;
+                  isNormalUser = true;
+                };
                 environment.etc."bigeon/config.json".text = builtins.toJSON {
                   embedColor = cfg.embedColor;
                   serverAddress = cfg.server;
@@ -113,9 +117,9 @@
                 };
 
                 environment.systemPackages = [ botPkg ];
-                systemd.user.services.bigeon = {
+                systemd.services.bigeon = {
+                  User = "bigeon";
                   enable = cfg.enableService;
-                  # name = "bigeon";
                   description = "Bridge bot for discord";
                   after = [ "network-online.target" ];
                   wants = [ "network-online.target" ];
