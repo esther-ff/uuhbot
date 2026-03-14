@@ -113,7 +113,7 @@
                 };
 
                 environment.systemPackages = [ botPkg ];
-                systemd.services.bigeon = {
+                systemd.user.services.bigeon = {
                   enable = cfg.enableService;
                   # name = "bigeon";
                   description = "Bridge bot for discord";
