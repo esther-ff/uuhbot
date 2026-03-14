@@ -97,7 +97,7 @@
               let
                 botPkg = packages.${pkgs.system}.default;
                 wrapper = pkgs.writeShellScript "bigeon-wrapped" ''
-                  echo $HOME
+                  echo meow
                   BIGEON_TOKEN=$(cat $CREDENTIALS_DIRECTORY/bigeon-token) ${botPkg}/bin/bigeon
                 '';
 
