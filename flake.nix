@@ -118,7 +118,6 @@
 
                 environment.systemPackages = [ botPkg ];
                 systemd.services.bigeon = {
-                  User = "bigeon";
                   enable = cfg.enableService;
                   description = "Bridge bot for discord";
                   after = [ "network-online.target" ];
@@ -127,6 +126,7 @@
 
                   serviceConfig = {
                     Type = "simple";
+                    User = "bigeon";
                     ExecStart = "${wrapper}";
                   };
                 };
