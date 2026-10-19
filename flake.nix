@@ -136,10 +136,8 @@
                     DevicePolicy = "closed";
                     UMask = 0077;
                     NoNewPrivileges = true;
-                    ProtectSystem = "full";
                     ProtectKernelTunables = true;
                     ProtectKernelModules = true;
-                    ProtectHome = true;
                     RestrictSUIDSGID = true;
                     RestrictRealtime = true;
                     RestrictAddressFamilies = [
