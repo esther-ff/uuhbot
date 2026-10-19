@@ -20,7 +20,7 @@
       packages = everySystem (
         system:
         let
-          pkgs = import nixpkgs { inherit system; };
+          pkgs = import nixpkgs { stdenv.hostPlatform.system = system; };
         in
         {
           default = pkgs.callPackage ./default.nix { };
@@ -95,7 +95,7 @@
 
             config = lib.modules.mkIf cfg.enable (
               let
-                botPkg = packages.${pkgs.system}.default;
+                botPkg = packages.${pkgs.stdenv.hostPlatform.system}.default;
                 wrapper = pkgs.writeShellScript "bigeon-wrapped" ''
                   echo meow
                   BIGEON_TOKEN=$(cat $CREDENTIALS_DIRECTORY/bigeon-token) ${botPkg}/bin/bigeon
