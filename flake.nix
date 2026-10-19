@@ -20,7 +20,7 @@
       packages = everySystem (
         system:
         let
-          pkgs = import nixpkgs { stdenv.hostPlatform.system = system; };
+          pkgs = import nixpkgs { inherit system; };
         in
         {
           default = pkgs.callPackage ./default.nix { };
